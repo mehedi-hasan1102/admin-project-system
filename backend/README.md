@@ -1,90 +1,100 @@
-# Admin & Project Management System - Backend
+# Admin & Project Management System - Backend API
 
-A production-ready backend API built with **Node.js, Express, TypeScript, MongoDB, and JWT authentication**.
+A production-ready backend REST API for enterprise-level project and resource management, built with Node.js, Express, TypeScript, and MongoDB.
 
-## 📋 Table of Contents
+**Version:** 1.0.0 | **Status:** Active Development
 
-1. [Features](#features)
-2. [Project Structure](#project-structure)
-3. [Getting Started](#getting-started)
-4. [Environment Setup](#environment-setup)
-5. [API Documentation](#api-documentation)
-6. [Authentication Flow](#authentication-flow)
-7. [Role-Based Access Control](#role-based-access-control)
-8. [Database Models](#database-models)
-9. [Error Handling](#error-handling)
-10. [Testing](#testing)
-11. [Deployment](#deployment)
-12. [Troubleshooting](#troubleshooting)
+## 📋 Quick Navigation
+
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Quick Start](#-quick-start)
+- [Architecture](#-architecture)
+- [API Reference](#-api-reference)
+- [Authentication](#-authentication)
+- [Role-Based Access Control](#-role-based-access-control)
+- [Database Models](#-database-models)
+- [Error Handling](#-error-handling)
+- [Testing](#-testing)
+- [Deployment](#-deployment)
+- [Troubleshooting](#-troubleshooting)
+- [Resources](#-resources)
 
 ---
 
 ## ✨ Features
 
-### 🔐 Security
-- **JWT Authentication** with access & refresh tokens
-- **Password Hashing** with bcrypt (SALT_ROUNDS: 10)
-- **Role-Based Access Control (RBAC)** with 3 roles: ADMIN, MANAGER, STAFF
-- **Request Validation** using Zod schemas
-- **Error Handling** with custom error classes and global error middleware
-- **Environment Validation** on startup
+### Security & Authentication
+- **JWT-based Authentication** with access & refresh tokens
+- **Password Security** - bcrypt hashing with 10 salt rounds
+- **Role-Based Access Control (RBAC)** - 3 role levels with granular permissions
+- **Input Validation** - Zod schemas for all API requests
+- **Error Handling** - Custom error classes with structured error responses
+- **Environment Validation** - Runtime verification of all configuration
 
-### 👥 User Management
-- User registration and login
-- Invite-based registration flow
-- User profile management
-- Admin controls: deactivate users, change roles
-- Last login tracking
+### User Management
+- Self-registration and OAuth-ready architecture
+- Email-based invitation system with token verification
+- User profile management and status tracking
+- Admin capabilities for user lifecycle management
+- Last login tracking and activity monitoring
 
-### 📊 Project Management
-- Create and manage projects
-- Team member management with roles
-- Soft delete support (data preserved, not removed)
-- Project status tracking: ACTIVE, ARCHIVED, COMPLETED, ON_HOLD
+### Project Management
+- Full project lifecycle management
+- Role-based team member assignment
+- Hierarchical permissions (ADMIN, MANAGER, MEMBER)
+- Soft deletion with audit trail
+- Status tracking: ACTIVE, ARCHIVED, COMPLETED, ON_HOLD
 
-### 📧 Invite System
-- Admin can invite users via email
-- Invite tokens with 7-day expiry
-- Status tracking: PENDING, ACCEPTED, DECLINED, REVOKED, EXPIRED
-- Accept/decline invites
-- Revoke pending invites
+### Collaboration
+- Team member management with role-based access
+- Project-scoped permissions
+- Multi-level authorization checks
+- Real-time collaboration ready (extensible)
 
-### 🗂️ Task Management (Models ready)
-- Task CRUD operations (endpoints coming soon)
-- Task status: TODO, IN_PROGRESS, IN_REVIEW, DONE, BLOCKED
-- Priority levels: LOW, MEDIUM, HIGH, URGENT
-- Assign tasks to team members
-- Due date tracking
+### Task Management
+- Comprehensive task tracking system
+- Priority and status management
+- Team member assignment and tracking
+- Due date management and reminders
+- Soft delete support for audit trails
 
----
+## 🛠️ Tech Stack
 
-## 📁 Project Structure
+| L🏗️ Architecture
+
+### Directory Structure
 
 ```
-backend/
-├── src/
-│   ├── config/
-│   │   ├── db.ts                 # MongoDB connection setup
-│   │   └── environment.ts        # Environment validation with Zod
-│   ├── models/
-│   │   ├── User.ts              # User model with RBAC support
-│   │   ├── Project.ts           # Project model with soft delete
-│   │   ├── Invite.ts            # Invite system model
-│   │   └── Task.ts              # Task model
-│   ├── controllers/
-│   │   ├── authController.ts    # Login, register, profile
-│   │   ├── userController.ts    # User & invite management
-│   │   └── projectController.ts # Project CRUD & team management
-│   ├── routes/
-│   │   ├── authRoutes.ts        # Auth endpoints
-│   │   ├── userRoutes.ts        # User endpoints
-│   │   └── projectRoutes.ts     # Project endpoints
-│   ├── middleware/
-│   │   ├── authMiddleware.ts    # JWT verification & RBAC
-│   │   ├── errorHandler.ts      # Global error handling
-│   │   └── validationMiddleware.ts # Request validation
-│   ├── utils/
-│   │   ├── password.ts          # Bcrypt utilities
+src/
+├── config/
+│   ├── db.ts                    # MongoDB initialization
+│   └── environment.ts           # Runtime configuration validation
+├── models/
+│   ├── User.ts                  # User schema with authentication fields
+│   ├── Project.ts               # Project schema with team management
+│   ├── Invite.ts                # Invitation schema
+│   └── Task.ts                  # Task tracking schema
+├── controllers/
+│   ├── authController.ts        # Authentication endpoints
+│   ├── userController.ts        # User management endpoints
+│   └── projectController.ts     # Project management endpoints
+├── routes/
+│   ├── authRoutes.ts            # /api/auth routes
+│   ├── userRoutes.ts            # /api/users routes
+│   └── projectRoutes.ts         # /api/projects routes
+├── middleware/
+│   ├── authMiddleware.ts        # JWT verification & authorization
+│   ├── errorHandler.ts          # Global error processing
+│   └── validationMiddleware.ts  # Request schema validation
+├── utils/
+│   ├── password.ts              # Password hashing utilities
+│   ├── jwt.ts                   # Token generation/verification
+│   ├── errors.ts                # Custom error classes
+│   ├── validators.ts            # Zod validation schemas
+│   └── asyncHandler.ts          # Async error wrapper
+├── app.ts                       # Express application
+└── server.ts                    # Entry pointtilities
 │   │   ├── jwt.ts               # JWT token generation/verification
 │   │   ├── errors.ts            # Custom error classes
 │   │   ├── validators.ts        # Zod validation schemas
@@ -96,26 +106,20 @@ backend/
 ├── .env                         # Environment variables
 ├── .gitignore
 ├── CODE_REVIEW.md              # Detailed code review
-├── IMPLEMENTATION_SUMMARY.md   # What was implemented
-├── TESTING_GUIDE.md            # How to test with Postman
-└── README.md                   # This file
-```
+├── IMQuick Start
 
----
+### System Requirements
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- **Node.js** 18+ and **npm** 9+
-- **MongoDB** Atlas account or local MongoDB
-- **Git**
+- **Node.js:** v18.0.0 or higher
+- **npm:** v9.0.0 or higher
+- **MongoDB:** 5.0+ (Atlas cloud or self-hosted)
+- **Git:** For version control
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone and navigate**
    ```bash
-   git clone <repo-url>
+   git clone <repository-url>
    cd admin-project-system/backend
    ```
 
@@ -124,298 +128,317 @@ backend/
    npm install
    ```
 
-3. **Set up environment variables** (see next section)
+3. **Configure environment** (see [Environment Setup](#environment-setup))
    ```bash
    cp .env.example .env
-   # Edit .env with your values
+   nano .env  # Add your configuration values
    ```
 
-4. **Start development server**
+4. **Start development**
    ```bash
    npm run dev
    ```
 
-   Expected output:
-   ```
-   ✅ Environment variables validated successfully
-   ✅ Database connected
-   🚀 Server running on http://localhost:5000
-   Environment: development
-   ```
-
-### Build for Production
+### Build & Deploy
 
 ```bash
-npm run build      # Compiles TypeScript to dist/
-npm start          # Runs compiled JavaScript
+npm run build    # Transpile TypeScript → JavaScript
+npm start        # Run production build
 ```
 
----
+### Available Commands
 
-## 🔧 Environment Setup
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Start development server with hot-reload |
+| `npm run build` | Compile TypeScript to `dist/` |
+| `npm start` | Run compiled production build |
+| `npm run seed` | Seed database with sample data |```
 
-### Create `.env` file
+### BuConfiguration
+
+### Environment Variables
+
+Create a `.env` file in the project root with the following:
 
 ```env
-# Server
+# Runtime Environment
 NODE_ENV=development
 PORT=5000
 
-# Database
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dbname?retryWrites=true&w=majority
+# Database Configuration
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/dbname
 
-# JWT
-JWT_SECRET=your-secret-key-minimum-32-characters-long
+# Security
+JWT_SECRET=your-secret-key-at-least-32-characters-long
 ```
 
-### ⚠️ Environment Variables
+### Configuration Reference
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `NODE_ENV` | Environment type | `development`, `production`, `test` |
-| `PORT` | Server port | `5000` |
-| `MONGODB_URI` | MongoDB connection string | `mongodb+srv://...` |
-| `JWT_SECRET` | Secret key for JWT (min 32 chars) | Random secure string |
+| Variable | Required | Type | Default | Description |
+|----------|----------|------|---------|-------------|
+| `NODE_ENV` | ✅ | String | - | Execution environment: `development`, `production`, `test` |
+| `PORT` | ✅ | Number | 5000 | Server listening port |
+| `MONGODB_URI` | ✅ | String | - | MongoDB connection URI (Atlas or local) |
+| `JWT_SECRET` | ✅ | String | - | Encryption key for JWT tokens (≥32 characters) |
 
-### Validation
+### Validation Rules
 
-Environment variables are validated on startup using Zod. If any are missing or invalid, the server will exit with detailed error messages.
-
----
-
-## 📚 API Documentation
+- All environment variables are validated at startup using Zod schemas
+- Invalid or missing variables will prevent server initialization
+- ConnectiReference
 
 ### Base URL
 ```
 http://localhost:5000
 ```
 
-### Health Check
-```http
-GET /health
+### Response Format
+
+All API responses follow this structure:
+
+```json
+{
+  "success": true/false,
+  "message": "Operation description",
+  "data": {}
+}
 ```
 
-### Authentication Endpoints
+### Authentication
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/api/auth/register` | ❌ | Register new user |
-| POST | `/api/auth/login` | ❌ | Login with email/password |
-| GET | `/api/auth/profile` | ✅ | Get current user profile |
-| PUT | `/api/auth/profile` | ✅ | Update user profile |
+#### POST `/api/auth/register`
+Register new user account.
 
-### User Management Endpoints
-
-| Method | Endpoint | Auth | Role | Description |
-|--------|----------|------|------|-------------|
-| GET | `/api/users` | ✅ | ADMIN | List all users |
-| GET | `/api/users/:userId` | ✅ | ADMIN\|SELF | Get user by ID |
-| POST | `/api/users/invites/create` | ✅ | ADMIN | Create invite |
-| GET | `/api/users/invites/status` | ❌ | - | Check invite status |
-| GET | `/api/users/invites` | ✅ | ADMIN | List invites |
-| DELETE | `/api/users/invites/:inviteId` | ✅ | ADMIN | Revoke invite |
-| PUT | `/api/users/:userId/deactivate` | ✅ | ADMIN | Deactivate user |
-| PUT | `/api/users/:userId/role` | ✅ | ADMIN | Change user role |
-
-### Project Endpoints
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/api/projects` | ✅ | Create project |
-| GET | `/api/projects` | ✅ | Get user projects |
-| GET | `/api/projects/:projectId` | ✅ | Get project details |
-| PUT | `/api/projects/:projectId` | ✅ | Update project |
-| DELETE | `/api/projects/:projectId` | ✅ | Soft delete project |
-| POST | `/api/projects/:projectId/team-members` | ✅ | Add team member |
-| DELETE | `/api/projects/:projectId/team-members/:memberId` | ✅ | Remove team member |
-
----
-
-## 🔐 Authentication Flow
-
-### 1. Register (Self)
-```typescript
-POST /api/auth/register
+```json
 {
   "name": "John Doe",
   "email": "john@example.com",
-  "password": "SecurePass123!"  // Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+  "password": "SecurePass123!"
 }
-→ User created with STAFF role
-→ Returns { accessToken, refreshToken, user }
 ```
 
-### 2. Register with Invite
-```typescript
-POST /api/auth/register
-{
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "password": "SecurePass123!",
-  "inviteToken": "token-from-email"
-}
-→ User created with role from invite (ADMIN, MANAGER, or STAFF)
-→ Invite marked as ACCEPTED
-→ Returns { accessToken, refreshToken, user }
-```
+#### POST `/api/auth/login`
+Authenticate and receive tokens.
 
-### 3. Login
-```typescript
-POST /api/auth/login
+```json
 {
   "email": "john@example.com",
   "password": "SecurePass123!"
 }
-→ Verifies password
-→ Updates lastLogin
-→ Returns { accessToken, refreshToken, user }
 ```
 
-### 4. Use Token
-```typescript
+#### GET `/api/auth/profile`
+Get authenticated user profile. Requires `Authorization: Bearer <token>`
+
+#### PUT `/api/auth/profile`
+Update user profile. Requires authentication.
+
+### User Management
+
+### Authentication Flow
+
+#### Self-Registration
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "SecurePass123!"
+}
+```
+- Creates user with `STAFF` role
+- Returns access & refresh tokens
+
+#### Invite-Based Registration
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "password": "SecurePass123!",
+  "inviteToken": "invite-token-from-email"
+}
+```
+- Creates user with invited role (ADMIN, MANAGER, or STAFF)
+- Marks invitation as ACCEPTED
+
+#### Login
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "SecurePass123!"
+}
+```
+- Returns tokens on successful authentication
+- Updates user's `lastLogin` timestamp
+
+#### Using Tokens
+```http
 GET /api/auth/profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
-→ Returns authenticated user profile
 ```
 
-### Token Details
-- **Access Token**: Expires in 15 minutes
-- **Refresh Token**: Expires in 7 days
-- **Format**: JWT (JSON Web Token)
-- **Algorithm**: HS256
+### Token Specifications
 
----
+| Property | Value |
+|----------|-------|
+| **Type** | JWT (JSON Web Token) |
+| **Algorithm** | HS256 |
+| **Access Token TTL** | 15 minutes |
+| **Refresh Token TTL** | 7 days |
+| **Signature** | HMAC using JWT_SECRET |
 
-## 👥 Role-Based Access Control
+### Password Requirements
 
-### Roles
+- Minimum 8 characters
+- At least 1 uppercase letter (A-Z)
+- At least 1 lowercase letter (a-z)
+- At least 1 number (0-9)
+- At least 1 special character (!@#$%^&*)
+#### PUT `/api/projects/:projectId`
+Update project information.
+Authorization Hierarchy
 
-| Role | Permissions |
-|------|-------------|
-| **ADMIN** | Full system access, create invites, manage all users, delete projects |
-| **MANAGER** | Create projects, manage own projects, assign tasks |
-| **STAFF** | Create projects, view assigned tasks, collaborate |
+| Role | Level | Capabilities |
+|------|-------|--------------|
+| **ADMIN** | 3 | System administration, user lifecycle, invite management, full project control |
+| **MANAGER** | 2 | Project creation/management, team assignment, task delegation |
+| **STAFF** | 1 | Project participation, task completion, collaboration |
 
-### Usage in Routes
+### Permission Matrix
+
+| Feature | ADMIN | MANAGER | STAFF |
+|---------|-------|---------|-------|
+| Create Invites | ✅ | ❌ | ❌ |
+| Manage All Users | ✅ | ❌ | ❌ |
+| Create Projects | ✅ | ✅ | ✅ |
+| Delete Projects | ✅ | Own only | Own only |
+| Assign Tasks | ✅ | ✅ | ❌ |
+| Complete Tasks | ✅ | ✅ | ✅ |
+
+### Implementation
 
 ```typescript
-// Require ADMIN role
+// ADMIN-only endpoint
 router.post("/", authMiddleware, authorize(Role.ADMIN), handler);
 
-// Require ADMIN or MANAGER
+// ADMIN or MANAGER
 router.post("/", authMiddleware, authorize(Role.ADMIN, Role.MANAGER), handler);
 
-// Require authentication only
-router.post("/", authMiddleware, handler);
+// Any a Collection
 
-// Public endpoint
-router.post("/", handler);
-```
-
----
-
-## 🗄️ Database Models
-
-### User
 ```typescript
 {
-  _id: ObjectId
-  name: String (required)
-  email: String (required, unique)
-  password: String (hashed, required)
-  role: "ADMIN" | "MANAGER" | "STAFF" (default: STAFF)
-  status: "ACTIVE" | "INACTIVE" (default: ACTIVE)
-  invitedAt?: Date
-  inviteToken?: String
-  inviteTokenExpiry?: Date
-  lastLogin?: Date
-  createdAt: Date
-  updatedAt: Date
+  _id: ObjectId,
+  name: String,                    // Full name (2-100 chars)
+  email: String,                   // Unique, indexed
+  password: String,                // Bcrypt hashed
+  role: "ADMIN" | "MANAGER" | "STAFF",  // Default: STAFF
+  status: "ACTIVE" | "INACTIVE",   // Default: ACTIVE
+  invitedAt?: Date,
+  inviteToken?: String,
+  inviteTokenExpiry?: Date,
+  lastLogin?: Date,
+  createdAt: Date,                 // Auto-generated
+  updatedAt: Date                  // Auto-generated
 }
 ```
 
-### Project
+### Project Collection
+
 ```typescript
 {
-  _id: ObjectId
-  name: String (required, 3-100 chars)
-  description?: String (max 500 chars)
-  status: "ACTIVE" | "ARCHIVED" | "COMPLETED" | "ON_HOLD"
-  admin: ObjectId (ref: User)
-  teamMembers: [
+  _id: ObjectId,
+  name: String,                    // 3-100 chars
+  description?: String,            // Max 500 chars
+  status: ProjectStatus,           // ACTIVE | ARCHIVED | COMPLETED | ON_HOLD
+  createdBy: ObjectId,             // Reference to User
+  admin?: ObjectId,                // Project admin user
+  teamMembers: [                   // Array of team assignments
     {
-      userId: ObjectId (ref: User)
+      userId: ObjectId,
       role: "ADMIN" | "MANAGER" | "MEMBER"
     }
-  ]
-  deletedAt?: Date (null = not deleted)
-  createdAt: Date
+  ],
+  isDeleted: Boolean,              // Soft delete flag
+  deletedAt?: Date,                // Soft delete timestamp
+  createdAt: Date,
   updatedAt: Date
 }
 ```
 
-### Invite
+### Invite Collection
+
 ```typescript
 {
-  _id: ObjectId
-  email: String (required)
-  invitedBy: ObjectId (ref: User)
-  role: "ADMIN" | "MANAGER" | "STAFF"
-  status: "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED"
-  expiresAt: Date (7 days default)
-  acceptedAt?: Date
-  acceptedBy?: ObjectId (ref: User)
-  projectId?: ObjectId (ref: Project)
-  createdAt: Date
+  _id: ObjectId,
+  email: String,                   // Invited email address
+  invitedBy: ObjectId,             // Admin who sent invite
+  role: "ADMIN" | "MANAGER" | "STAFF",
+  status: InviteStatus,            // PENDING | ACCEPTED | DECLINED | REVOKED | EXPIRED
+  expiresAt: Date,                 // Default: +7 days
+  acceptedAt?: Date,
+  acceptedBy?: ObjectId,           // User who accepted
+  projectId?: ObjectId,            // Optional project reference
+  createdAt: Date,
   updatedAt: Date
 }
 ```
 
-### Task
+### Task Collection
+
 ```typescript
 {
-  _id: ObjectId
-  title: String (required, 3-200 chars)
-  description?: String (max 2000 chars)
-  projectId: ObjectId (ref: Project)
-  assignedTo?: ObjectId (ref: User)
-  createdBy: ObjectId (ref: User)
-  status: "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE" | "BLOCKED"
-  priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT"
-  dueDate?: Date
-  deletedAt?: Date (null = not deleted)
-  createdAt: Date
-  updatedAt: Date
-}
-```
+  _id: ObjectId,
+  title: String,                   // 3-200 chars
+  description?: String,            // Max 2000 chars
+  projectId: ObjectId,             // Reference to Project
+  assignedTo?: ObjectId,           // User assigned to task
+  createdBy: ObjectId,             // Task creator
+  status: TaskStatus,              // TODO | IN_PROGRESS | IN_REVIEW | DONE | BLOCKED
+  priority: TaskPriority,          // LOW | MEDIUM | HIGH | URGENT
+  dueDate?: Date,
+  isDeleted: Boolean,              // Soft delete flag
+  deletedAt?: Date,                // Soft delete timestamp
+  createdAt: Date,
 
----
+## Standard Error Response
 
-## ⚠️ Error Handling
-
-### Error Response Format
 ```json
 {
   "success": false,
   "message": "Error description",
-  "errors": []  // Optional: detailed validation errors
+  "errors": [
+    {
+      "field": "fieldName",
+      "message": "Validation error details"
+    }
+  ]
 }
 ```
 
 ### HTTP Status Codes
 
-| Code | Error | Example |
-|------|-------|---------|
-| 400 | Bad Request | Invalid input data |
-| 401 | Unauthorized | Missing or invalid token |
-| 403 | Forbidden | Insufficient permissions |
-| 404 | Not Found | Resource doesn't exist |
-| 409 | Conflict | Email already exists |
-| 500 | Server Error | Unexpected error |
+| Code | Type | Cause | Resolution |
+|------|------|-------|-----------|
+| 400 | Bad Request | Invalid input format or missing fields | Review request payload against schema |
+| 401 | Unauthorized | Missing or invalid JWT token | Provide valid `Authorization: Bearer <token>` header |
+| 403 | Forbidden | User lacks required permissions | Verify user role matches endpoint requirements |
+| 404 | Not Found | Resource doesn't exist | Check resource ID and confirm record exists |
+| 409 | Conflict | Unique constraint violation (e.g., duplicate email) | Use different value for unique field |
+| 500 | Internal Server Error | Unexpected server error | Check server logs for details |
 
-### Example Errors
+### Common Error Responses
 
-**Validation Error (400)**
+**Validation Error**
 ```json
 {
   "success": false,
@@ -423,32 +446,243 @@ router.post("/", handler);
   "errors": [
     {
       "field": "email",
-      "message": "Invalid email address"
+      "message": "Invalid email format"
     }
   ]
 }
 ```
 
-**Unauthorized (401)**
+**Missing Token**
 ```json
 {
   "success": false,
   "message": "No token provided"
 }
 ```
+Setup
 
-**Forbidden (403)**
-```json
+1. Create new collection: `Admin System API`
+2. Configure environment variables:
+   - `baseUrl` = `http://localhost:5000`
+   - `accessToken` = (auto-populate from login response)
+   - `userId` = (auto-populate from profile response)
+
+### Test Workflow
+
+**1. Register User**
+```http
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
 {
-  "success": false,
-  "message": "Insufficient permissions"
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "TestPass123!"
 }
 ```
 
+**2. Login**
+```http
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "TestPass123!"
+}
+```
+→ Save `accessToken` to environment variable
+
+**3. Get Profile**
+```http
+GET {{baseUrl}}/api/auth/profile
+Authorization: Bearer {{accessToken}}
+```
+
+**4. Coduction Checklist
+
+- [ ] Compile TypeScript: `npm run build`
+- [ ] Verify all environment variables
+- [ ] Set `NODE_ENV=production`
+- [ ] Install production dependencies only
+- [ ] Configure MongoDB Atlas security
+- [ ] Set up JWT_SECRET in production vault
+- [ ] Enable CORS for frontend domain
+- [ ] Configure SSL/TLS certificates
+
+### Standard Deployment
+
+```bash
+# Prepare application
+npm run build
+
+# Install only production dependencies
+npm install --production
+
+# Start application
+NODE_ENV=production npm start
+```
+
+### Process Management with PM2
+
+```bash
+# Install PM2 globally
+npm install -g pm2
+
+# Start application
+pm2 start npm --name "admin-api" -- start
+
+# Configure auto-restart
+pm2 save
+pm2 startup
+
+# Monitor
+pm2 logs admin-api
+pm2 status
+```
+
+### Docker Containerization
+
+**Dockerfile**
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY dist ./dist
+ENV NODE_ENV=production
+EXPOSE 5000
+CMD ["node", "dist/server.js"]
+```
+
+**Build and Run**
+```bash
+# Build image
+docker build -t admin-api:latest .
+Database Connection Issues
+
+**Symptom:** `MongoDB connection error`
+
+**Solutions:**
+- Verify `MONGODB_URI` format and credentials in `.env`
+- Check MongoDB Atlas IP whitelist includes server IP
+- Test connection with MongoDB Compass using connection string
+- Confirm database user has appropriate roles
+- Check network connectivity to MongoDB server
+
+### Environment Configuration
+
+**Symptom:** `Environment validation failed`
+
+**Solutions:**
+- Ensure all required variables are set (check error message)
+- `JWT_SECRET` must be at least 32 characters
+- Variable names are case-sensitive
+- No spaces around `=` in `.env` file
+- Run `npm run dev` to see detailed validation errors
+
+### Authentication Issues
+
+**Symptom:** `No token provided` (401)
+
+**Solutions:**
+- Add `Authorization` header to request
+- Format: `Authorization: Bearer <token>`
+- Remove "Bearer " prefix from token value
+- Check token isn't malformed in request
+
+**Symptom:** `Invalid token` (401)
+
+**Solutions:**
+- Access tokens expire after 15 minutes
+- Us� Documentation
+
+### Code Organization
+
+**Naming Conventions**
+- `camelCase` - Variables, functions, methods
+- `PascalCase` - Classes, interfaces, enums
+- `UPPER_SNAKE_CASE` - Constants, environment variables
+- `kebab-case.ts` - Files (except model definitions)
+
+**Code Patterns**
+- Use TypeScript for complete type safety
+- Follow async/await pattern (not .then())
+- Wrap async routes with asyncHandler utility
+- Use custom error classes for exceptions
+- Keep controllers focused, extract business logic to services
+
+### Adding New Features
+
+```
+1. Design schema in src/models/NewModel.ts
+2. Create controller in src/controllers/newController.ts
+3. Add validation in src/utils/validators.ts
+4. Define routes in src/routes/newRoutes.ts
+5. Register routes in src/app.ts
+6. Add authorization checks to routes
+7. Test all endpoints in Postman
+```
+
+### Project Philosophy
+
+- **Separation of Concerns** - Models, controllers, middleware clearly separated
+- **Type Safety** - Full TypeScript coverage
+- **Error Handling** - Custom errors with meaningful messages
+- **Security First** - Authentication, validation, authorization on all endpoints
+- **Extensibility** - Architecture supports new features easily
+
 ---
 
-## 🧪 Testing
+## 🔗 Resources
 
+| Resource | Link |
+|----------|------|
+| **Node.js** | https://nodejs.org/ |
+| **Express.js** | https://expressjs.com/ |
+| **TypeScript** | https://www.typescriptlang.org/ |
+| **MongoDB** | https://docs.mongodb.com/ |
+| **Mongoose** | https://mongoosejs.com/ |
+| **JWT** | https://jwt.io/ |
+| **Zod Validation** | https://zod.dev/ |
+| **bcryptjs** | https://www.npmjs.com/package/bcryptjs |
+
+---
+
+## 📄 License
+
+MIT License - See LICENSE file for details
+
+---
+
+## 🆘 Support
+
+### Common Issues
+
+For detailed troubleshooting, see [Troubleshooting](#troubleshooting) section above.
+
+### Getting Help
+
+1. **Check logs** - Server logs contain detailed error messages
+2. **Verify configuration** - Ensure all `.env` variables are set correctly
+3. **Review error response** - API returns specific error codes and messages
+4. **Test in isolation** - Use Postman to test endpoints individually
+5. **Check permissions** - Verify user role matches endpoint requirements
+
+### Reporting Issues
+
+When reporting bugs, include:
+- Error message and stack trace
+- Endpoint being tested
+- Request payload
+- Server environment (development/production)
+- Node.js and npm versions
+
+---
+
+**Built with ❤️ for efficient project management**
+
+Version 1.0.0 | Last Updated: January 2026
 ### Postman Collection
 
 1. Open Postman
