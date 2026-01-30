@@ -5,7 +5,7 @@ import { json } from "body-parser";
 
 // Import config
 import { connectDB } from "./config/db";
-import { validateEnvironment } from "./config/environment";
+import { validateEnvironment, getEnv } from "./config/environment";
 
 // Import routes
 import authRoutes from "./routes/authRoutes";
@@ -20,11 +20,33 @@ dotenv.config();
 
 // Validate environment on startup
 validateEnvironment();
+const env = getEnv();
 
 const app = express();
 
+// CORS configuration for both local and production
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "https://admin-project-system-frontend.vercel.app",
+      env.FRONTEND_URL,
+    ];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(json());
 
 // Health check endpoint
