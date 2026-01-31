@@ -49,6 +49,7 @@ router.get(
 router.patch(
   "/:projectId",
   authMiddleware,
+  authorize(Role.ADMIN),
   validate(updateProjectSchema),
   asyncHandler(projectController.updateProject)
 );
@@ -60,6 +61,7 @@ router.patch(
 router.delete(
   "/:projectId",
   authMiddleware,
+  authorize(Role.ADMIN),
   asyncHandler(projectController.deleteProject)
 );
 

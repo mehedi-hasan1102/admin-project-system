@@ -57,16 +57,7 @@ export const getProjects = async (
   }
 
   const projects = await Project.find({
-    $and: [
-      { isDeleted: false },
-      {
-        $or: [
-          { createdBy: req.userId },
-          { admin: req.userId },
-          { "teamMembers.userId": req.userId },
-        ],
-      },
-    ],
+    isDeleted: false,
   } as any).populate("createdBy admin", "name email role");
 
   res.status(200).json({
@@ -137,9 +128,9 @@ export const updateProject = async (
     throw new NotFoundError("Project has been deleted");
   }
 
-  // Only admin can update project
-  if (project.admin?.toString() !== req.userId) {
-    throw new ForbiddenError("Only project admin can update project");
+  // Only ADMIN role can update project
+  if (req.role !== Role.ADMIN) {
+    throw new ForbiddenError("Only ADMIN users can update projects");
   }
 
   Object.assign(project, updateData);
@@ -153,7 +144,7 @@ export const updateProject = async (
 };
 
 /**
- * Soft delete project (PATCH - admin only)
+ * Soft delete project (DELETE - admin only)
  */
 export const deleteProject = async (
   req: AuthRequest,
@@ -175,12 +166,9 @@ export const deleteProject = async (
     throw new NotFoundError("Project has already been deleted");
   }
 
-  // Only admin or creator can delete project
-  const isAdmin = req.role === Role.ADMIN;
-  const isCreator = project.createdBy?.toString() === req.userId || project.admin?.toString() === req.userId;
-
-  if (!isAdmin && !isCreator) {
-    throw new ForbiddenError("Only admin or project creator can delete project");
+  // Only ADMIN role can delete project
+  if (req.role !== Role.ADMIN) {
+    throw new ForbiddenError("Only ADMIN users can delete projects");
   }
 
   // Soft delete - set isDeleted and deletedAt
